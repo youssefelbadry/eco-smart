@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y libzip-dev unzip git zip libonig-dev \
 
 # Adjust Apache config to use new document root
 RUN sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/*.conf \
-    && sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf
+    && sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf \
+    && sed -ri -e 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf /etc/apache2/sites-available/*.conf
 
 # Copy composer binary (optional)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

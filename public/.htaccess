@@ -1,6 +1,12 @@
+Options -Indexes +FollowSymLinks
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
@@ -9,7 +15,3 @@
 <IfModule mod_authz_core.c>
     Require all granted
 </IfModule>
-
-<Limit GET POST PUT DELETE OPTIONS>
-    Require all granted
-</Limit>
