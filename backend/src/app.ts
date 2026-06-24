@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import path from "path";
 import cors from "cors";
 import routes from "./routes";
@@ -7,7 +8,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "../public")));
+
+const publicPath = fs.existsSync(path.resolve(process.cwd(), "backend/public"))
+  ? path.resolve(process.cwd(), "backend/public")
+  : path.resolve(__dirname, "../public");
+
+app.use(express.static(publicPath));
 app.use(routes);
 
 app.use(
@@ -23,13 +29,11 @@ app.use(
         .json({ success: false, message: "Invalid JSON body", data: {} });
     }
     if (err instanceof Error) {
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: err.message || "Internal server error",
-          data: {},
-        });
+      return res.status(500).json({
+        success: false,
+        message: err.message || "Internal server error",
+        data: {},
+      });
     }
     next(err);
   },
