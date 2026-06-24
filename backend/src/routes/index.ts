@@ -23,6 +23,10 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
+router.get("/health", (req, res) => {
+  res.json({ status: "ok", message: "Serverless function is working" });
+});
+
 router.post("/api_login.php", asyncHandler(login));
 router.post("/api_signup.php", asyncHandler(signup));
 router.post("/api_forgot_password.php", asyncHandler(forgotPassword));
