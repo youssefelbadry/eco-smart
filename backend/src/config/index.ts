@@ -1,5 +1,12 @@
+console.log("[CONFIG-1] Starting config module load");
+
+console.log("[CONFIG-2] Before import path");
 import path from "path";
+console.log("[CONFIG-3] After import path");
+
+console.log("[CONFIG-4] Before import dotenv");
 import dotenv from "dotenv";
+console.log("[CONFIG-5] After import dotenv");
 
 // In serverless/Vercel, only use environment variables, not .env files
 // This prevents blocking file system operations during module load
@@ -20,7 +27,9 @@ if (process.env.NODE_ENV !== "production") {
   }
 }
 
+console.log("[CONFIG-6] Before dotenv.config()");
 dotenv.config();
+console.log("[CONFIG-7] After dotenv.config()");
 
 const databaseUrl =
   process.env.MYSQL_PUBLIC_URL || process.env.DATABASE_URL || "";

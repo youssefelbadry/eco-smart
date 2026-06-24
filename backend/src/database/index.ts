@@ -1,5 +1,12 @@
+console.log("[DB-1] Starting database module load");
+
+console.log("[DB-2] Before import mysql2/promise");
 import mysql from "mysql2/promise";
+console.log("[DB-3] After import mysql2/promise");
+
+console.log("[DB-4] Before import config");
 import { config } from "../config";
+console.log("[DB-5] After import config");
 
 let pool: mysql.Pool | null = null;
 

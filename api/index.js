@@ -1,17 +1,17 @@
-console.log("[INIT] Starting module load");
+console.log("[INIT-1] Starting module load");
 
 try {
-  console.log("[INIT] Loading serverless-http");
+  console.log("[INIT-2] Before require serverless-http");
   const serverless = require("serverless-http");
-  console.log("[INIT] serverless-http loaded");
+  console.log("[INIT-3] After require serverless-http");
 
-  console.log("[INIT] Loading app from backend/dist/app");
+  console.log("[INIT-4] Before require backend/dist/app");
   const app = require("../backend/dist/app").default;
-  console.log("[INIT] App loaded successfully");
+  console.log("[INIT-5] After require backend/dist/app");
 
-  console.log("[INIT] Creating serverless handler");
+  console.log("[INIT-6] Before serverless(app)");
   const handler = serverless(app);
-  console.log("[INIT] Handler created successfully");
+  console.log("[INIT-7] After serverless(app)");
 
   module.exports = async (event, context) => {
     console.log("[START] Function invoked", {

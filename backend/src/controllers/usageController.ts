@@ -1,7 +1,20 @@
+console.log("[USAGE-CTRL-1] Starting usageController module load");
+
+console.log("[USAGE-CTRL-2] Before import express");
 import { Request, Response } from "express";
+console.log("[USAGE-CTRL-3] After import express");
+
+console.log("[USAGE-CTRL-4] Before import query");
 import { query } from "../database";
+console.log("[USAGE-CTRL-5] After import query");
+
+console.log("[USAGE-CTRL-6] Before import success");
 import { success } from "../utils/response";
+console.log("[USAGE-CTRL-7] After import success");
+
+console.log("[USAGE-CTRL-8] Before import AuthRequest");
 import { AuthRequest } from "../middleware/auth";
+console.log("[USAGE-CTRL-9] After import AuthRequest");
 
 export async function usageOverview(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);

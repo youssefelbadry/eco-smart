@@ -1,7 +1,20 @@
+console.log("[DEVICE-CTRL-1] Starting deviceController module load");
+
+console.log("[DEVICE-CTRL-2] Before import express");
 import { Request, Response } from "express";
+console.log("[DEVICE-CTRL-3] After import express");
+
+console.log("[DEVICE-CTRL-4] Before import query");
 import { query } from "../database";
+console.log("[DEVICE-CTRL-5] After import query");
+
+console.log("[DEVICE-CTRL-6] Before import response utils");
 import { success, error } from "../utils/response";
+console.log("[DEVICE-CTRL-7] After import response utils");
+
+console.log("[DEVICE-CTRL-8] Before import AuthRequest");
 import { AuthRequest } from "../middleware/auth";
+console.log("[DEVICE-CTRL-9] After import AuthRequest");
 
 const getQuery = (req: Request, key: string, defaultValue = "") => {
   const value = Array.isArray(req.query[key])

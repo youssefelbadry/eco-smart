@@ -1,9 +1,28 @@
+console.log("[AUTH-CTRL-1] Starting authController module load");
+
+console.log("[AUTH-CTRL-2] Before import express");
 import { Request, Response } from "express";
+console.log("[AUTH-CTRL-3] After import express");
+
+console.log("[AUTH-CTRL-4] Before import bcryptjs");
 import bcrypt from "bcryptjs";
+console.log("[AUTH-CTRL-5] After import bcryptjs");
+
+console.log("[AUTH-CTRL-6] Before import jsonwebtoken");
 import jwt from "jsonwebtoken";
+console.log("[AUTH-CTRL-7] After import jsonwebtoken");
+
+console.log("[AUTH-CTRL-8] Before import config");
 import { config } from "../config";
+console.log("[AUTH-CTRL-9] After import config");
+
+console.log("[AUTH-CTRL-10] Before import query");
 import { query } from "../database";
+console.log("[AUTH-CTRL-11] After import query");
+
+console.log("[AUTH-CTRL-12] Before import response utils");
 import { success, error } from "../utils/response";
+console.log("[AUTH-CTRL-13] After import response utils");
 
 const getBody = (req: Request) =>
   req.body && Object.keys(req.body).length ? req.body : {};

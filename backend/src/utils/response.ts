@@ -1,4 +1,8 @@
+console.log("[RESPONSE-UTIL-1] Starting response utils module load");
+
+console.log("[RESPONSE-UTIL-2] Before import express");
 import { Response } from "express";
+console.log("[RESPONSE-UTIL-3] After import express");
 
 export function success({
   res,

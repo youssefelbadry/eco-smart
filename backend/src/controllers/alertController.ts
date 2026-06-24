@@ -1,7 +1,20 @@
+console.log("[ALERT-CTRL-1] Starting alertController module load");
+
+console.log("[ALERT-CTRL-2] Before import express");
 import { Request, Response } from "express";
+console.log("[ALERT-CTRL-3] After import express");
+
+console.log("[ALERT-CTRL-4] Before import query");
 import { query } from "../database";
+console.log("[ALERT-CTRL-5] After import query");
+
+console.log("[ALERT-CTRL-6] Before import response utils");
 import { success, error } from "../utils/response";
+console.log("[ALERT-CTRL-7] After import response utils");
+
+console.log("[ALERT-CTRL-8] Before import AuthRequest");
 import { AuthRequest } from "../middleware/auth";
+console.log("[ALERT-CTRL-9] After import AuthRequest");
 
 const getQuery = (req: Request, key: string, defaultValue = "") => {
   const value = Array.isArray(req.query[key])

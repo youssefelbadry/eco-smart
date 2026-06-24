@@ -1,27 +1,54 @@
+console.log("[ROUTES-1] Starting routes/index.ts module load");
+
+console.log("[ROUTES-2] Before import Router");
 import { Router } from "express";
+console.log("[ROUTES-3] After import Router");
+
+console.log("[ROUTES-4] Before import authController");
 import {
   login,
   signup,
   forgotPassword,
   resetPassword,
 } from "../controllers/authController";
+console.log("[ROUTES-5] After import authController");
+
+console.log("[ROUTES-6] Before import deviceController");
 import {
   devicesList,
   devicesDashboard,
   categoriesCounts,
 } from "../controllers/deviceController";
+console.log("[ROUTES-7] After import deviceController");
+
+console.log("[ROUTES-8] Before import alertController");
 import {
   alertsList,
   alertsCounts,
   alertsTrend,
   acknowledgeAll,
 } from "../controllers/alertController";
-import { usageOverview, usageTrend } from "../controllers/usageController";
-import { systemHealth } from "../controllers/systemController";
-import { authenticateToken } from "../middleware/auth";
-import { asyncHandler } from "../utils/asyncHandler";
+console.log("[ROUTES-9] After import alertController");
 
+console.log("[ROUTES-10] Before import usageController");
+import { usageOverview, usageTrend } from "../controllers/usageController";
+console.log("[ROUTES-11] After import usageController");
+
+console.log("[ROUTES-12] Before import systemController");
+import { systemHealth } from "../controllers/systemController";
+console.log("[ROUTES-13] After import systemController");
+
+console.log("[ROUTES-14] Before import authenticateToken");
+import { authenticateToken } from "../middleware/auth";
+console.log("[ROUTES-15] After import authenticateToken");
+
+console.log("[ROUTES-16] Before import asyncHandler");
+import { asyncHandler } from "../utils/asyncHandler";
+console.log("[ROUTES-17] After import asyncHandler");
+
+console.log("[ROUTES-18] Before Router()");
 const router = Router();
+console.log("[ROUTES-19] After Router()");
 
 router.get("/health", (req, res) => {
   console.log("[HEALTH] Health check requested");
@@ -77,4 +104,6 @@ router.get(
   asyncHandler(systemHealth),
 );
 
+console.log("[ROUTES-20] Before export default router");
 export default router;
+console.log("[ROUTES-21] After export default router");

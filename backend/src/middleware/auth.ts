@@ -1,6 +1,16 @@
+console.log("[AUTH-MW-1] Starting auth middleware module load");
+
+console.log("[AUTH-MW-2] Before import express");
 import { Request, Response, NextFunction } from "express";
+console.log("[AUTH-MW-3] After import express");
+
+console.log("[AUTH-MW-4] Before import jsonwebtoken");
 import jwt from "jsonwebtoken";
+console.log("[AUTH-MW-5] After import jsonwebtoken");
+
+console.log("[AUTH-MW-6] Before import config");
 import { config } from "../config";
+console.log("[AUTH-MW-7] After import config");
 
 export interface AuthRequest extends Request {
   user?: any;

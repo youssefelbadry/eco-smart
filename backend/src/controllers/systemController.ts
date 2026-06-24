@@ -1,7 +1,20 @@
+console.log("[SYSTEM-CTRL-1] Starting systemController module load");
+
+console.log("[SYSTEM-CTRL-2] Before import express");
 import { Request, Response } from "express";
+console.log("[SYSTEM-CTRL-3] After import express");
+
+console.log("[SYSTEM-CTRL-4] Before import query");
 import { query } from "../database";
+console.log("[SYSTEM-CTRL-5] After import query");
+
+console.log("[SYSTEM-CTRL-6] Before import success");
 import { success } from "../utils/response";
+console.log("[SYSTEM-CTRL-7] After import success");
+
+console.log("[SYSTEM-CTRL-8] Before import AuthRequest");
 import { AuthRequest } from "../middleware/auth";
+console.log("[SYSTEM-CTRL-9] After import AuthRequest");
 
 export async function systemHealth(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
