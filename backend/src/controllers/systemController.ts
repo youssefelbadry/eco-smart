@@ -14,9 +14,12 @@ export async function systemHealth(req: AuthRequest, res: Response) {
     [userId],
   );
   const health = rows[0] || {};
-  return success(res, {
-    health_percent: Number(health.health_percent ?? 0),
-    online_devices: Number(health.online_devices ?? 0),
-    active_warnings: Number(health.warnings_count ?? 0),
+  return success({
+    res,
+    data: {
+      health_percent: Number(health.health_percent ?? 0),
+      online_devices: Number(health.online_devices ?? 0),
+      active_warnings: Number(health.warnings_count ?? 0),
+    },
   });
 }

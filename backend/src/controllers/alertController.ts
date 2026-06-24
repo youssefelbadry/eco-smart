@@ -40,7 +40,10 @@ export async function alertsList(req: AuthRequest, res: Response) {
 
   sql += " ORDER BY created_at DESC LIMIT 100";
   const [rows] = await pool.execute<any[]>(sql, params);
-  return success(res, { data: rows });
+  return success({
+    res,
+    data: rows,
+  });
 }
 
 export async function alertsCounts(req: AuthRequest, res: Response) {
@@ -55,7 +58,10 @@ export async function alertsCounts(req: AuthRequest, res: Response) {
     FROM alerts WHERE user_id = ?`,
     [userId],
   );
-  return success(res, { data: rows[0] || {} });
+  return success({
+    res,
+    data: rows[0] || {},
+  });
 }
 
 export async function alertsTrend(req: AuthRequest, res: Response) {
@@ -66,7 +72,10 @@ export async function alertsTrend(req: AuthRequest, res: Response) {
      GROUP BY DATE(created_at) ORDER BY day_date ASC`,
     [userId],
   );
-  return success(res, { data: rows });
+  return success({
+    res,
+    data: rows,
+  });
 }
 
 export async function acknowledgeAll(req: AuthRequest, res: Response) {
@@ -76,9 +85,9 @@ export async function acknowledgeAll(req: AuthRequest, res: Response) {
     [userId],
   )) as [{ affectedRows?: number }, any];
 
-  return success(
+  return success({
     res,
-    { affected_rows: result.affectedRows || 0 },
-    "All active alerts acknowledged",
-  );
+    data: { affected_rows: result.affectedRows || 0 },
+    message: "All active alerts acknowledged",
+  });
 }

@@ -14,7 +14,11 @@ export async function login(req: Request, res: Response) {
   const password = String(body.password || "");
 
   if (!emailOrUsername || !password) {
-    return error(res, "email_or_username and password required", 400);
+    return error({
+      res,
+      message: "email_or_username and password required",
+      statusCode: 400,
+    });
   }
 
   const [user] = await pool.execute<any[]>(
@@ -24,7 +28,11 @@ export async function login(req: Request, res: Response) {
   const userRow = user[0];
 
   if (!userRow || !bcrypt.compareSync(password, userRow.password)) {
-    return error(res, "Invalid credentials", 401);
+    return error({
+      res,
+      message: "Invalid credentials",
+      statusCode: 401,
+    });
   }
 
   const payload = {
@@ -36,9 +44,9 @@ export async function login(req: Request, res: Response) {
 
   const token = jwt.sign(payload, config.jwtSecret, { algorithm: "HS256" });
 
-  return success(
+  return success({
     res,
-    {
+    data: {
       token,
       user: {
         id: Number(userRow.id),
@@ -46,8 +54,8 @@ export async function login(req: Request, res: Response) {
         email: userRow.email,
       },
     },
-    "Login success",
-  );
+    message: "Login success",
+  });
 }
 
 export async function signup(req: Request, res: Response) {
@@ -60,12 +68,20 @@ export async function signup(req: Request, res: Response) {
     (field) => !body[field],
   );
   if (requiredField) {
-    return error(res, `${requiredField} is required`, 400);
+    return error({
+      res,
+      message: `${requiredField} is required`,
+      statusCode: 400,
+    });
   }
 
   const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   if (!emailRegex.test(email)) {
-    return error(res, "Invalid email address", 400);
+    return error({
+      res,
+      message: "Invalid email address",
+      statusCode: 400,
+    });
   }
 
   const passwordStrong =
@@ -74,27 +90,41 @@ export async function signup(req: Request, res: Response) {
     /[a-z]/.test(password) &&
     /[0-9]/.test(password);
   if (!passwordStrong) {
-    return error(
+    return error({
       res,
-      "Password must be at least 8 characters, include upper and lower case letters, and contain a number",
-      400,
-    );
+      message:
+        "Password must be at least 8 characters, include upper and lower case letters, and contain a number",
+      statusCode: 400,
+    });
   }
 
   const passwordHash = bcrypt.hashSync(password, 10);
-  await pool.execute(
+  const result = await pool.execute(
     "INSERT INTO users (name, email, password, remember_token, created_at, updated_at) VALUES (?, ?, ?, NULL, NOW(), NOW())",
     [name, email, passwordHash],
   );
 
-  return success(res, {}, "User registered successfully");
+  return success({
+    res,
+    data: {
+      user: {
+        name,
+        email,
+      },
+    },
+    message: "User registered successfully",
+  });
 }
 
 export async function forgotPassword(req: Request, res: Response) {
   const body = getBody(req);
   const email = String(body.email || "").trim();
   if (!email) {
-    return error(res, "email required", 400);
+    return error({
+      res,
+      message: "email required",
+      statusCode: 400,
+    });
   }
 
   const token = require("crypto").randomBytes(32).toString("hex");
@@ -103,7 +133,11 @@ export async function forgotPassword(req: Request, res: Response) {
     [email, token],
   );
 
-  return success(res, { reset_token_demo: token }, "Reset token generated");
+  return success({
+    res,
+    data: { reset_token_demo: token },
+    message: "Reset token generated",
+  });
 }
 
 export async function resetPassword(req: Request, res: Response) {
@@ -112,7 +146,11 @@ export async function resetPassword(req: Request, res: Response) {
   const newPassword = String(body.new_password || "");
 
   if (!token || !newPassword) {
-    return error(res, "reset_token and new_password required", 400);
+    return error({
+      res,
+      message: "reset_token and new_password required",
+      statusCode: 400,
+    });
   }
 
   const passwordStrong =
@@ -121,11 +159,12 @@ export async function resetPassword(req: Request, res: Response) {
     /[a-z]/.test(newPassword) &&
     /[0-9]/.test(newPassword);
   if (!passwordStrong) {
-    return error(
+    return error({
       res,
-      "Password must be at least 8 characters, include upper and lower case letters, and contain a number",
-      400,
-    );
+      message:
+        "Password must be at least 8 characters, include upper and lower case letters, and contain a number",
+      statusCode: 400,
+    });
   }
 
   const [rows] = await pool.execute<any[]>(
@@ -134,12 +173,20 @@ export async function resetPassword(req: Request, res: Response) {
   );
   const row = rows[0];
   if (!row) {
-    return error(res, "Invalid token", 400);
+    return error({
+      res,
+      message: "Invalid token",
+      statusCode: 400,
+    });
   }
 
   const createdAt = new Date(row.created_at).getTime();
   if (Date.now() > createdAt + 1800 * 1000) {
-    return error(res, "Token expired", 400);
+    return error({
+      res,
+      message: "Token expired",
+      statusCode: 400,
+    });
   }
 
   const passwordHash = bcrypt.hashSync(newPassword, 10);
@@ -151,5 +198,9 @@ export async function resetPassword(req: Request, res: Response) {
     row.email,
   ]);
 
-  return success(res, {}, "Password updated successfully");
+  return success({
+    res,
+    data: {},
+    message: "Password updated successfully",
+  });
 }

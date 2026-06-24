@@ -22,7 +22,8 @@ export async function usageOverview(req: AuthRequest, res: Response) {
   const weekly = weeklyRows[0] || {};
   const monthly = monthlyRows[0] || {};
 
-  return success(res, {
+  return success({
+    res,
     data: {
       daily: {
         period_type: "daily",
@@ -65,5 +66,8 @@ export async function usageTrend(req: AuthRequest, res: Response) {
      FROM hourly_usage WHERE user_id = ? AND usage_date = CURDATE() ORDER BY hour ASC`,
     [userId],
   );
-  return success(res, { data: rows });
+  return success({
+    res,
+    data: rows,
+  });
 }

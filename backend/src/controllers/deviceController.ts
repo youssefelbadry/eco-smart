@@ -58,7 +58,10 @@ export async function devicesList(req: AuthRequest, res: Response) {
 
   sql += ` ORDER BY ${sortColumn} ${sortDirection}`;
   const [rows] = await pool.execute<any[]>(sql, params);
-  return success(res, { data: rows || [] });
+  return success({
+    res,
+    data: rows || [],
+  });
 }
 
 export async function devicesDashboard(req: AuthRequest, res: Response) {
@@ -121,16 +124,19 @@ export async function devicesDashboard(req: AuthRequest, res: Response) {
     [userId],
   );
 
-  return success(res, {
-    filters: { search, status, category, sort_by: sortBy, sort_dir: sortDir },
-    system_health: {
-      percent: Number(healthRows[0]?.health_percent ?? 0),
-      online_devices: Number(healthRows[0]?.online_devices ?? 0),
-      warnings_count: Number(healthRows[0]?.warnings_count ?? 0),
+  return success({
+    res,
+    data: {
+      filters: { search, status, category, sort_by: sortBy, sort_dir: sortDir },
+      system_health: {
+        percent: Number(healthRows[0]?.health_percent ?? 0),
+        online_devices: Number(healthRows[0]?.online_devices ?? 0),
+        warnings_count: Number(healthRows[0]?.warnings_count ?? 0),
+      },
+      all_devices_count: Number(totalRows[0]?.total ?? 0),
+      categories: categories || [],
+      devices: devices || [],
     },
-    all_devices_count: Number(totalRows[0]?.total ?? 0),
-    categories: categories || [],
-    devices: devices || [],
   });
 }
 
@@ -144,8 +150,11 @@ export async function categoriesCounts(req: AuthRequest, res: Response) {
     "SELECT COUNT(*) AS total FROM devices WHERE user_id = ?",
     [userId],
   );
-  return success(res, {
-    all_devices_count: Number(totalRows[0]?.total ?? 0),
-    categories: categories || [],
+  return success({
+    res,
+    data: {
+      all_devices_count: Number(totalRows[0]?.total ?? 0),
+      categories: categories || [],
+    },
   });
 }
