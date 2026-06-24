@@ -1,6 +1,4 @@
 import express from "express";
-import fs from "fs";
-import path from "path";
 import cors from "cors";
 import routes from "./routes";
 
@@ -9,11 +7,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const publicPath = fs.existsSync(path.resolve(process.cwd(), "backend/public"))
-  ? path.resolve(process.cwd(), "backend/public")
-  : path.resolve(__dirname, "../public");
-
-app.use(express.static(publicPath));
 app.use(routes);
 
 app.use(
