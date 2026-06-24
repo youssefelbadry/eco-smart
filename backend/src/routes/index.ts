@@ -57,6 +57,8 @@ router.get("/health", (req, res) => {
   console.timeEnd("[HEALTH] Response time");
 });
 
+// Log all routes for debugging
+console.log("[ROUTES] Registering POST /api_login.php");
 router.post("/api_login.php", asyncHandler(login));
 router.post("/api_signup.php", asyncHandler(signup));
 router.post("/api_forgot_password.php", asyncHandler(forgotPassword));
@@ -103,6 +105,18 @@ router.get(
   authenticateToken,
   asyncHandler(systemHealth),
 );
+
+// Catch-all route for debugging
+router.all("*", (req, res) => {
+  console.log("[ROUTES] Unmatched route:", {
+    method: req.method,
+    path: req.path,
+    url: req.url,
+  });
+  res
+    .status(404)
+    .json({ success: false, message: `Cannot ${req.method} ${req.path}` });
+});
 
 console.log("[ROUTES-20] Before export default router");
 export default router;

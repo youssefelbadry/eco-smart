@@ -6,6 +6,17 @@
   },
   "item": [
     {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
       "name": "Login",
       "request": {
         "method": "POST",
