@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
-import { pool } from "../database";
+import { query } from "../database";
 import { success, error } from "../utils/response";
 
 const getBody = (req: Request) =>
@@ -24,12 +24,12 @@ export async function login(req: Request, res: Response) {
   }
 
   console.log("[LOGIN] Executing user query");
-  const [user] = await pool.execute<any[]>(
+  const users = await query<any[]>(
     "SELECT id, name, email, password FROM users WHERE email = ? OR name = ? LIMIT 1",
     [emailOrUsername, emailOrUsername],
   );
-  console.log("[LOGIN] User query completed", { userCount: user.length });
-  const userRow = user[0];
+  console.log("[LOGIN] User query completed", { userCount: users.length });
+  const userRow = users[0] as any;
 
   if (!userRow || !bcrypt.compareSync(password, userRow.password)) {
     console.log("[LOGIN] Invalid credentials");
@@ -106,7 +106,7 @@ export async function signup(req: Request, res: Response) {
   }
 
   const passwordHash = bcrypt.hashSync(password, 10);
-  const result = await pool.execute(
+  await query(
     "INSERT INTO users (name, email, password, remember_token, created_at, updated_at) VALUES (?, ?, ?, NULL, NOW(), NOW())",
     [name, email, passwordHash],
   );
@@ -135,7 +135,7 @@ export async function forgotPassword(req: Request, res: Response) {
   }
 
   const token = require("crypto").randomBytes(32).toString("hex");
-  await pool.execute(
+  await query(
     "INSERT INTO password_reset_tokens (email, token, created_at) VALUES (?, ?, NOW())",
     [email, token],
   );
@@ -174,11 +174,11 @@ export async function resetPassword(req: Request, res: Response) {
     });
   }
 
-  const [rows] = await pool.execute<any[]>(
+  const tokenRows = await query<any[]>(
     "SELECT email, token, created_at FROM password_reset_tokens WHERE token = ? LIMIT 1",
     [token],
   );
-  const row = rows[0];
+  const row = tokenRows[0] as any;
   if (!row) {
     return error({
       res,
@@ -197,10 +197,8 @@ export async function resetPassword(req: Request, res: Response) {
   }
 
   const passwordHash = bcrypt.hashSync(newPassword, 10);
-  await pool.execute("DELETE FROM password_reset_tokens WHERE email = ?", [
-    row.email,
-  ]);
-  await pool.execute("UPDATE users SET password = ? WHERE email = ?", [
+  await query("DELETE FROM password_reset_tokens WHERE email = ?", [row.email]);
+  await query("UPDATE users SET password = ? WHERE email = ?", [
     passwordHash,
     row.email,
   ]);

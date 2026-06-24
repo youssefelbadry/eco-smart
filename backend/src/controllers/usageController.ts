@@ -1,26 +1,26 @@
 import { Request, Response } from "express";
-import { pool } from "../database";
+import { query } from "../database";
 import { success } from "../utils/response";
 import { AuthRequest } from "../middleware/auth";
 
 export async function usageOverview(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
-  const [dailyRows] = await pool.execute<any[]>(
+  const [dailies] = await query<any[]>(
     "SELECT usage_date, kwh, cost FROM daily_usage WHERE user_id = ? AND usage_date = CURDATE() LIMIT 1",
     [userId],
   );
-  const [weeklyRows] = await pool.execute<any[]>(
+  const [weeklies] = await query<any[]>(
     "SELECT week_start, week_end, total_kwh, total_cost FROM weekly_usage WHERE user_id = ? AND week_start <= CURDATE() ORDER BY week_start DESC LIMIT 1",
     [userId],
   );
-  const [monthlyRows] = await pool.execute<any[]>(
+  const [monthlies] = await query<any[]>(
     'SELECT month, total_kwh, total_cost FROM monthly_usage WHERE user_id = ? AND month <= DATE_FORMAT(CURDATE(), "%Y-%m-01") ORDER BY month DESC LIMIT 1',
     [userId],
   );
 
-  const daily = dailyRows[0] || {};
-  const weekly = weeklyRows[0] || {};
-  const monthly = monthlyRows[0] || {};
+  const daily = (dailies as any) || {};
+  const weekly = (weeklies as any) || {};
+  const monthly = (monthlies as any) || {};
 
   return success({
     res,
@@ -61,7 +61,7 @@ export async function usageOverview(req: AuthRequest, res: Response) {
 
 export async function usageTrend(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
-  const [rows] = await pool.execute<any[]>(
+  const rows = await query<any[]>(
     `SELECT CONCAT(usage_date, ' ', LPAD(hour, 2, '0'), ':00:00') AS point_time, kwh AS usage_kwh
      FROM hourly_usage WHERE user_id = ? AND usage_date = CURDATE() ORDER BY hour ASC`,
     [userId],

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { pool } from "../database";
+import { query } from "../database";
 import { success, error } from "../utils/response";
 import { AuthRequest } from "../middleware/auth";
 
@@ -39,7 +39,7 @@ export async function alertsList(req: AuthRequest, res: Response) {
   }
 
   sql += " ORDER BY created_at DESC LIMIT 100";
-  const [rows] = await pool.execute<any[]>(sql, params);
+  const rows = await query<any[]>(sql, params);
   return success({
     res,
     data: rows,
@@ -48,7 +48,7 @@ export async function alertsList(req: AuthRequest, res: Response) {
 
 export async function alertsCounts(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
-  const [rows] = await pool.execute<any[]>(
+  const rows = await query<any[]>(
     `SELECT
       SUM(CASE WHEN severity = 'critical' AND is_resolved = 0 THEN 1 ELSE 0 END) AS critical_count,
       SUM(CASE WHEN severity = 'high' AND is_resolved = 0 THEN 1 ELSE 0 END) AS high_count,
@@ -66,7 +66,7 @@ export async function alertsCounts(req: AuthRequest, res: Response) {
 
 export async function alertsTrend(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
-  const [rows] = await pool.execute<any[]>(
+  const rows = await query<any[]>(
     `SELECT DATE(created_at) AS day_date, COUNT(*) AS total_alerts
      FROM alerts WHERE user_id = ? AND created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
      GROUP BY DATE(created_at) ORDER BY day_date ASC`,
@@ -80,14 +80,14 @@ export async function alertsTrend(req: AuthRequest, res: Response) {
 
 export async function acknowledgeAll(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
-  const [result] = (await pool.execute(
+  await query(
     "UPDATE alerts SET is_read = 1, is_resolved = 1, resolved_at = NOW() WHERE user_id = ? AND is_resolved = 0",
     [userId],
-  )) as [{ affectedRows?: number }, any];
+  );
 
   return success({
     res,
-    data: { affected_rows: result.affectedRows || 0 },
+    data: {},
     message: "All active alerts acknowledged",
   });
 }

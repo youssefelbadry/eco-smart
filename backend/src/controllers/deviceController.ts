@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { pool } from "../database";
+import { query } from "../database";
 import { success, error } from "../utils/response";
 import { AuthRequest } from "../middleware/auth";
 
@@ -57,7 +57,7 @@ export async function devicesList(req: AuthRequest, res: Response) {
   }
 
   sql += ` ORDER BY ${sortColumn} ${sortDirection}`;
-  const [rows] = await pool.execute<any[]>(sql, params);
+  const rows = await query<any[]>(sql, params);
   return success({
     res,
     data: rows || [],
@@ -110,16 +110,16 @@ export async function devicesDashboard(req: AuthRequest, res: Response) {
   }
   baseSql += ` ORDER BY ${sortColumn} ${sortDirection}`;
 
-  const [devices] = await pool.execute<any[]>(baseSql, params);
-  const [categories] = await pool.execute<any[]>(
+  const devices = await query<any[]>(baseSql, params);
+  const categories = await query<any[]>(
     "SELECT d.category AS category_name, COUNT(*) AS devices_count FROM devices d WHERE d.user_id = ? GROUP BY d.category ORDER BY d.category ASC",
     [userId],
   );
-  const [totalRows] = await pool.execute<any[]>(
+  const [totals] = await query<any[]>(
     "SELECT COUNT(*) AS total FROM devices WHERE user_id = ?",
     [userId],
   );
-  const [healthRows] = await pool.execute<any[]>(
+  const [healths] = await query<any[]>(
     'SELECT COALESCE(ROUND(AVG(CASE WHEN status = "online" THEN 100 ELSE 0 END)), 0) AS health_percent, SUM(CASE WHEN status = "online" THEN 1 ELSE 0 END) AS online_devices, SUM(CASE WHEN status = "warning" THEN 1 ELSE 0 END) AS warnings_count FROM devices WHERE user_id = ?',
     [userId],
   );
@@ -129,11 +129,11 @@ export async function devicesDashboard(req: AuthRequest, res: Response) {
     data: {
       filters: { search, status, category, sort_by: sortBy, sort_dir: sortDir },
       system_health: {
-        percent: Number(healthRows[0]?.health_percent ?? 0),
-        online_devices: Number(healthRows[0]?.online_devices ?? 0),
-        warnings_count: Number(healthRows[0]?.warnings_count ?? 0),
+        percent: Number((healths as any)?.health_percent ?? 0),
+        online_devices: Number((healths as any)?.online_devices ?? 0),
+        warnings_count: Number((healths as any)?.warnings_count ?? 0),
       },
-      all_devices_count: Number(totalRows[0]?.total ?? 0),
+      all_devices_count: Number((totals as any)?.total ?? 0),
       categories: categories || [],
       devices: devices || [],
     },
@@ -142,18 +142,18 @@ export async function devicesDashboard(req: AuthRequest, res: Response) {
 
 export async function categoriesCounts(req: AuthRequest, res: Response) {
   const userId = Number(req.user?.sub || 0);
-  const [categories] = await pool.execute<any[]>(
+  const categories = await query<any[]>(
     "SELECT d.category AS category_name, COUNT(*) AS devices_count FROM devices d WHERE d.user_id = ? GROUP BY d.category ORDER BY d.category ASC",
     [userId],
   );
-  const [totalRows] = await pool.execute<any[]>(
+  const [totals] = await query<any[]>(
     "SELECT COUNT(*) AS total FROM devices WHERE user_id = ?",
     [userId],
   );
   return success({
     res,
     data: {
-      all_devices_count: Number(totalRows[0]?.total ?? 0),
+      all_devices_count: Number((totals as any)?.total ?? 0),
       categories: categories || [],
     },
   });
