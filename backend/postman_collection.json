@@ -1,0 +1,200 @@
+{
+  "info": {
+    "name": "ECO Smart Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": { "major": 1, "minor": 0, "patch": 0 }
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_login.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_login.php"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email_or_username\": \"user@example.com\",\n  \"password\": \"Password1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Signup",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_signup.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_signup.php"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Forgot Password",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_forgot_password.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_forgot_password.php"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"user@example.com\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_reset_password.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_reset_password.php"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reset_token\": \"your_token\",\n  \"new_password\": \"Password1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Devices List",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_devices_list.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_devices_list.php"]
+        }
+      }
+    },
+    {
+      "name": "Devices Dashboard",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_devices_dashboard.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_devices_dashboard.php"]
+        }
+      }
+    },
+    {
+      "name": "Categories Counts",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_categories_counts.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_categories_counts.php"]
+        }
+      }
+    },
+    {
+      "name": "Usage Overview",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_usage_overview.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_usage_overview.php"]
+        }
+      }
+    },
+    {
+      "name": "Usage Trend",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_usage_trend.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_usage_trend.php"]
+        }
+      }
+    },
+    {
+      "name": "Alerts List",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_alerts_list.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_alerts_list.php"]
+        }
+      }
+    },
+    {
+      "name": "Alerts Counts",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_alerts_counts.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_alerts_counts.php"]
+        }
+      }
+    },
+    {
+      "name": "Alerts Trend",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_alerts_trend.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_alerts_trend.php"]
+        }
+      }
+    },
+    {
+      "name": "Acknowledge All Alerts",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api_alert_acknowledge_all.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_alert_acknowledge_all.php"]
+        }
+      }
+    },
+    {
+      "name": "System Health",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api_system_health.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api_system_health.php"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "jwtToken", "value": "" }
+  ]
+}
