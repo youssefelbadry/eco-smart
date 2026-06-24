@@ -2,7 +2,13 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 
-const rootEnvPath = path.resolve(__dirname, "../../.env");
+const backendEnvPath = path.resolve(__dirname, "../../.env");
+const rootEnvPath = path.resolve(__dirname, "../../../.env");
+
+if (fs.existsSync(backendEnvPath)) {
+  dotenv.config({ path: backendEnvPath });
+}
+
 if (fs.existsSync(rootEnvPath)) {
   dotenv.config({ path: rootEnvPath });
 }
