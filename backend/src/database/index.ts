@@ -1,25 +1,63 @@
 import mysql from "mysql2/promise";
 import { config } from "../config";
 
-console.log("[DB] Initializing pool with config", {
+const databaseUrl = process.env.MYSQL_PUBLIC_URL || process.env.DATABASE_URL;
+
+console.log("[DB] Initializing pool", {
+  hasUrl: !!databaseUrl,
   host: config.dbHost,
   port: config.dbPort,
-  user: config.dbUser,
   database: config.dbName,
 });
 
-export const pool = mysql.createPool({
-  host: config.dbHost,
-  port: config.dbPort,
-  user: config.dbUser,
-  password: config.dbPassword,
-  database: config.dbName,
-  waitForConnections: true,
-  connectionLimit: 1,
-  queueLimit: 0,
-  decimalNumbers: true,
-  connectTimeout: 10000,
-});
+let poolConfig;
+
+if (databaseUrl) {
+  try {
+    const url = new URL(databaseUrl);
+    poolConfig = {
+      host: url.hostname,
+      port: url.port ? parseInt(url.port, 10) : 3306,
+      user: url.username,
+      password: url.password,
+      database: url.pathname?.replace(/^\//, "") || config.dbName,
+      waitForConnections: true,
+      connectionLimit: 1,
+      queueLimit: 0,
+      decimalNumbers: true,
+      connectTimeout: 10000,
+    };
+  } catch (e) {
+    console.log("[DB] Failed to parse DATABASE_URL, using config fallback");
+    poolConfig = {
+      host: config.dbHost,
+      port: config.dbPort,
+      user: config.dbUser,
+      password: config.dbPassword,
+      database: config.dbName,
+      waitForConnections: true,
+      connectionLimit: 1,
+      queueLimit: 0,
+      decimalNumbers: true,
+      connectTimeout: 10000,
+    };
+  }
+} else {
+  poolConfig = {
+    host: config.dbHost,
+    port: config.dbPort,
+    user: config.dbUser,
+    password: config.dbPassword,
+    database: config.dbName,
+    waitForConnections: true,
+    connectionLimit: 1,
+    queueLimit: 0,
+    decimalNumbers: true,
+    connectTimeout: 10000,
+  };
+}
+
+export const pool = mysql.createPool(poolConfig);
 
 pool.on("acquire", (connection) => {
   console.log("[DB] Connection acquired");
