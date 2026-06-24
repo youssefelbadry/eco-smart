@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "outputDirectory": "backend/dist",
+  "buildCommand": "cd backend && npm install --include=dev && npm run build",
   "routes": [
     {
       "src": "/(.*)",
