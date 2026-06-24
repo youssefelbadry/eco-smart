@@ -11,23 +11,28 @@ export function authenticateToken(
   res: Response,
   next: NextFunction,
 ) {
+  console.log("[AUTH] Middleware started");
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (
     !authHeader ||
     typeof authHeader !== "string" ||
     !authHeader.startsWith("Bearer ")
   ) {
+    console.log("[AUTH] Missing Bearer token");
     return res
       .status(401)
       .json({ success: false, message: "Missing Bearer token", data: {} });
   }
 
   const token = authHeader.slice(7).trim();
+  console.log("[AUTH] Verifying token");
   try {
     const payload = jwt.verify(token, config.jwtSecret);
+    console.log("[AUTH] Token verified successfully", { userId: payload.sub });
     req.user = payload;
     return next();
   } catch (error) {
+    console.log("[AUTH] Token verification failed", error);
     return res
       .status(401)
       .json({ success: false, message: "Invalid or expired token", data: {} });

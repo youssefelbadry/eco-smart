@@ -11,6 +11,7 @@ export function success({
   message?: string;
   statusCode?: number;
 }) {
+  console.log("[RESPONSE] Sending success", { statusCode, message });
   return res.status(statusCode).json({ success: true, message, data });
 }
 
@@ -25,5 +26,6 @@ export function error({
   statusCode?: number;
   data?: any;
 }) {
+  console.log("[RESPONSE] Sending error", { statusCode, message });
   return res.status(statusCode).json({ success: false, message, data });
 }

@@ -9,11 +9,13 @@ const getBody = (req: Request) =>
   req.body && Object.keys(req.body).length ? req.body : {};
 
 export async function login(req: Request, res: Response) {
+  console.log("[LOGIN] Controller started");
   const body = getBody(req);
   const emailOrUsername = String(body.email_or_username || "");
   const password = String(body.password || "");
 
   if (!emailOrUsername || !password) {
+    console.log("[LOGIN] Missing credentials");
     return error({
       res,
       message: "email_or_username and password required",
@@ -21,13 +23,16 @@ export async function login(req: Request, res: Response) {
     });
   }
 
+  console.log("[LOGIN] Executing user query");
   const [user] = await pool.execute<any[]>(
     "SELECT id, name, email, password FROM users WHERE email = ? OR name = ? LIMIT 1",
     [emailOrUsername, emailOrUsername],
   );
+  console.log("[LOGIN] User query completed", { userCount: user.length });
   const userRow = user[0];
 
   if (!userRow || !bcrypt.compareSync(password, userRow.password)) {
+    console.log("[LOGIN] Invalid credentials");
     return error({
       res,
       message: "Invalid credentials",
@@ -42,7 +47,9 @@ export async function login(req: Request, res: Response) {
     exp: Math.floor(Date.now() / 1000) + Number(config.jwtExpiration || 86400),
   };
 
+  console.log("[LOGIN] Generating token");
   const token = jwt.sign(payload, config.jwtSecret, { algorithm: "HS256" });
+  console.log("[LOGIN] Token generated, sending response");
 
   return success({
     res,
