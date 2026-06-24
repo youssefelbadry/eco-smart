@@ -59,6 +59,29 @@ if (databaseUrl) {
 
 export const pool = mysql.createPool(poolConfig);
 
+const originalExecute = pool.execute.bind(pool);
+pool.execute = function (sql: string, params?: any[]) {
+  console.log("[DB] pool.execute called", {
+    sql: typeof sql === "string" ? sql.substring(0, 100) : "prepared statement",
+    paramsCount: params?.length || 0,
+  });
+  const startTime = Date.now();
+  return originalExecute(sql, params)
+    .then((result) => {
+      console.log("[DB] pool.execute completed", {
+        duration: Date.now() - startTime + "ms",
+      });
+      return result;
+    })
+    .catch((error) => {
+      console.log("[DB] pool.execute failed", {
+        duration: Date.now() - startTime + "ms",
+        error: error.message,
+      });
+      throw error;
+    });
+} as any;
+
 pool.on("acquire", (connection) => {
   console.log("[DB] Connection acquired");
 });
