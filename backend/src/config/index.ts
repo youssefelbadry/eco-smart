@@ -1,16 +1,23 @@
-import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 
-const backendEnvPath = path.resolve(__dirname, "../../.env");
-const rootEnvPath = path.resolve(__dirname, "../../../.env");
+// In serverless/Vercel, only use environment variables, not .env files
+// This prevents blocking file system operations during module load
+if (process.env.NODE_ENV !== "production") {
+  const backendEnvPath = path.resolve(__dirname, "../../.env");
+  const rootEnvPath = path.resolve(__dirname, "../../../.env");
 
-if (fs.existsSync(backendEnvPath)) {
-  dotenv.config({ path: backendEnvPath });
-}
+  try {
+    dotenv.config({ path: backendEnvPath });
+  } catch (e) {
+    // Ignore if file doesn't exist
+  }
 
-if (fs.existsSync(rootEnvPath)) {
-  dotenv.config({ path: rootEnvPath });
+  try {
+    dotenv.config({ path: rootEnvPath });
+  } catch (e) {
+    // Ignore if file doesn't exist
+  }
 }
 
 dotenv.config();
