@@ -1,4 +1,5 @@
 import { execute, query } from "../database";
+import { getRandomDevices } from "../data/deviceCatalog";
 
 const DEVICE_ASSIGN_COUNT = 5;
 const DAILY_KWH_TARGET = 30;
@@ -51,11 +52,16 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 async function getRandomDeviceCatalogItems(): Promise<any[]> {
-  // Some MySQL servers do not support binding LIMIT as a parameter.
-  return query<any[]>(
-    `SELECT id, name, category, location_type, estimated_power_watts, average_daily_hours, default_status
-     FROM devices_catalog ORDER BY RAND() LIMIT ${DEVICE_ASSIGN_COUNT}`,
-  );
+  const devices = getRandomDevices(DEVICE_ASSIGN_COUNT);
+  return devices.map((device, index) => ({
+    id: index + 1,
+    name: device.name,
+    category: device.category,
+    location_type: device.location,
+    estimated_power_watts: device.estimated_power_watts,
+    average_daily_hours: Math.floor(2 + Math.random() * 6),
+    default_status: device.status,
+  }));
 }
 
 async function createEnergyTargets(userId: number): Promise<void> {
