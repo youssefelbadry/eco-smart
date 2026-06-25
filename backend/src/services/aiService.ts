@@ -35,7 +35,12 @@ class AIService {
 
   async getForecast(userId: number): Promise<AIResponse> {
     try {
+      console.log("[AI-SERVICE] Calling forecast endpoint", {
+        userId,
+        url: `${AI_SERVICE_URL}/forecast/${userId}`,
+      });
       const response = await axiosInstance.get(`/forecast/${userId}`);
+      console.log("[AI-SERVICE] Forecast endpoint returned successfully");
       return response.data;
     } catch (error) {
       this.handleError(error, "AI forecast retrieval failed");
@@ -105,7 +110,12 @@ class AIService {
 
   async getChartData(userId: number): Promise<AIResponse> {
     try {
+      console.log("[AI-SERVICE] Calling chart-data endpoint", {
+        userId,
+        url: `${AI_SERVICE_URL}/chart-data/${userId}`,
+      });
       const response = await axiosInstance.get(`/chart-data/${userId}`);
+      console.log("[AI-SERVICE] Chart-data endpoint returned successfully");
       return response.data;
     } catch (error) {
       this.handleError(error, "AI chart data retrieval failed");

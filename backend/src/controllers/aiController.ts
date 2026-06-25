@@ -9,7 +9,11 @@ export async function health(req: Request, res: Response) {
     const data = await aiService.health();
     return success({ res, data, message: "AI service is healthy" });
   } catch (err) {
-    return error({ res, message: "Failed to check AI service health", statusCode: 503 });
+    return error({
+      res,
+      message: "Failed to check AI service health",
+      statusCode: 503,
+    });
   }
 }
 
@@ -33,21 +37,34 @@ export async function predict(req: AuthRequest, res: Response) {
     const data = await aiService.predict(predictRequest);
     return success({ res, data, message: "Prediction generated successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to generate prediction", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to generate prediction",
+      statusCode: 500,
+    });
   }
 }
 
 export async function getForecast(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-FORECAST] Request received", { userId });
     if (!userId) {
+      console.log("[AI-FORECAST] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-FORECAST] Calling AI service for user", userId);
     const data = await aiService.getForecast(userId);
+    console.log("[AI-FORECAST] AI service returned data successfully");
     return success({ res, data, message: "Forecast retrieved successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve forecast", statusCode: 500 });
+    console.error("[AI-FORECAST] Error:", err);
+    return error({
+      res,
+      message: "Failed to retrieve forecast",
+      statusCode: 500,
+    });
   }
 }
 
@@ -59,9 +76,17 @@ export async function getFullOutput(req: AuthRequest, res: Response) {
     }
 
     const data = await aiService.getFullOutput(userId);
-    return success({ res, data, message: "Full output retrieved successfully" });
+    return success({
+      res,
+      data,
+      message: "Full output retrieved successfully",
+    });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve full output", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to retrieve full output",
+      statusCode: 500,
+    });
   }
 }
 
@@ -75,7 +100,11 @@ export async function getSummary(req: AuthRequest, res: Response) {
     const data = await aiService.getSummary(userId);
     return success({ res, data, message: "Summary retrieved successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve summary", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to retrieve summary",
+      statusCode: 500,
+    });
   }
 }
 
@@ -89,7 +118,11 @@ export async function getDevices(req: AuthRequest, res: Response) {
     const data = await aiService.getDevices(userId);
     return success({ res, data, message: "Devices retrieved successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve devices", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to retrieve devices",
+      statusCode: 500,
+    });
   }
 }
 
@@ -103,7 +136,11 @@ export async function getAppliances(req: AuthRequest, res: Response) {
     const data = await aiService.getAppliances(userId);
     return success({ res, data, message: "Appliances retrieved successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve appliances", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to retrieve appliances",
+      statusCode: 500,
+    });
   }
 }
 
@@ -117,7 +154,11 @@ export async function getAlerts(req: AuthRequest, res: Response) {
     const data = await aiService.getAlerts(userId);
     return success({ res, data, message: "Alerts retrieved successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve alerts", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to retrieve alerts",
+      statusCode: 500,
+    });
   }
 }
 
@@ -129,22 +170,39 @@ export async function getNotifications(req: AuthRequest, res: Response) {
     }
 
     const data = await aiService.getNotifications(userId);
-    return success({ res, data, message: "Notifications retrieved successfully" });
+    return success({
+      res,
+      data,
+      message: "Notifications retrieved successfully",
+    });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve notifications", statusCode: 500 });
+    return error({
+      res,
+      message: "Failed to retrieve notifications",
+      statusCode: 500,
+    });
   }
 }
 
 export async function getChartData(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-CHART-DATA] Request received", { userId });
     if (!userId) {
+      console.log("[AI-CHART-DATA] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-CHART-DATA] Calling AI service for user", userId);
     const data = await aiService.getChartData(userId);
+    console.log("[AI-CHART-DATA] AI service returned data successfully");
     return success({ res, data, message: "Chart data retrieved successfully" });
   } catch (err) {
-    return error({ res, message: "Failed to retrieve chart data", statusCode: 500 });
+    console.error("[AI-CHART-DATA] Error:", err);
+    return error({
+      res,
+      message: "Failed to retrieve chart data",
+      statusCode: 500,
+    });
   }
 }
