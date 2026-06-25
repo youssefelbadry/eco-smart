@@ -38,17 +38,21 @@ console.log("[ROUTES-12] Before import systemController");
 import { systemHealth } from "../controllers/systemController";
 console.log("[ROUTES-13] After import systemController");
 
-console.log("[ROUTES-14] Before import authenticateToken");
+console.log("[ROUTES-14] Before import aiRoutes");
+import aiRoutes from "./aiRoutes";
+console.log("[ROUTES-15] After import aiRoutes");
+
+console.log("[ROUTES-16] Before import authenticateToken");
 import { authenticateToken } from "../middleware/auth";
-console.log("[ROUTES-15] After import authenticateToken");
+console.log("[ROUTES-17] After import authenticateToken");
 
-console.log("[ROUTES-16] Before import asyncHandler");
+console.log("[ROUTES-18] Before import asyncHandler");
 import { asyncHandler } from "../utils/asyncHandler";
-console.log("[ROUTES-17] After import asyncHandler");
+console.log("[ROUTES-19] After import asyncHandler");
 
-console.log("[ROUTES-18] Before Router()");
+console.log("[ROUTES-20] Before Router()");
 const router = Router();
-console.log("[ROUTES-19] After Router()");
+console.log("[ROUTES-21] After Router()");
 
 router.get("/health", (req, res) => {
   console.log("[HEALTH] Health check requested");
@@ -106,6 +110,10 @@ router.get(
   asyncHandler(systemHealth),
 );
 
+// Mount AI routes
+console.log("[ROUTES] Mounting /api/ai routes");
+router.use("/api/ai", aiRoutes);
+
 // Catch-all route for debugging
 router.all("*", (req, res) => {
   console.log("[ROUTES] Unmatched route:", {
@@ -118,6 +126,6 @@ router.all("*", (req, res) => {
     .json({ success: false, message: `Cannot ${req.method} ${req.path}` });
 });
 
-console.log("[ROUTES-20] Before export default router");
+console.log("[ROUTES-22] Before export default router");
 export default router;
-console.log("[ROUTES-21] After export default router");
+console.log("[ROUTES-23] After export default router");

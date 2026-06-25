@@ -245,6 +245,153 @@
           }
         }
       ]
+    },
+    {
+      "name": "AI Service",
+      "item": [
+        {
+          "name": "AI Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "health"]
+            }
+          }
+        },
+        {
+          "name": "AI Predict",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/predict",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "predict"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"temperature\": 20,\n  \"hour\": 14,\n  \"is_weekend\": 0,\n  \"lag_1h\": 1.5,\n  \"lag_24h\": 1.2\n}"
+            }
+          }
+        },
+        {
+          "name": "AI Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "summary"]
+            }
+          }
+        },
+        {
+          "name": "AI Full Output",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/full-output",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "full-output"]
+            }
+          }
+        },
+        {
+          "name": "AI Forecast",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/forecast",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "forecast"]
+            }
+          }
+        },
+        {
+          "name": "AI Devices",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/devices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "devices"]
+            }
+          }
+        },
+        {
+          "name": "AI Appliances",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/appliances",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "appliances"]
+            }
+          }
+        },
+        {
+          "name": "AI Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "AI Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "notifications"]
+            }
+          }
+        },
+        {
+          "name": "AI Chart Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/chart-data",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "chart-data"]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [

@@ -63,4 +63,6 @@ export const config = {
   jwtExpiration: process.env.JWT_EXPIRATION
     ? parseInt(process.env.JWT_EXPIRATION, 10)
     : 86400,
+  aiServiceUrl:
+    process.env.AI_SERVICE_URL || "https://fady-50-ecosmart2.hf.space",
 };
