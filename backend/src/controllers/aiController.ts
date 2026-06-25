@@ -71,17 +71,22 @@ export async function getForecast(req: AuthRequest, res: Response) {
 export async function getFullOutput(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-FULL-OUTPUT] Request received", { userId });
     if (!userId) {
+      console.log("[AI-FULL-OUTPUT] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-FULL-OUTPUT] Calling AI service for user", userId);
     const data = await aiService.getFullOutput(userId);
+    console.log("[AI-FULL-OUTPUT] AI service returned data successfully");
     return success({
       res,
       data,
       message: "Full output retrieved successfully",
     });
   } catch (err) {
+    console.error("[AI-FULL-OUTPUT] Error:", err);
     return error({
       res,
       message: "Failed to retrieve full output",
@@ -93,13 +98,18 @@ export async function getFullOutput(req: AuthRequest, res: Response) {
 export async function getSummary(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-SUMMARY] Request received", { userId });
     if (!userId) {
+      console.log("[AI-SUMMARY] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-SUMMARY] Calling AI service for user", userId);
     const data = await aiService.getSummary(userId);
+    console.log("[AI-SUMMARY] AI service returned data successfully");
     return success({ res, data, message: "Summary retrieved successfully" });
   } catch (err) {
+    console.error("[AI-SUMMARY] Error:", err);
     return error({
       res,
       message: "Failed to retrieve summary",
@@ -111,13 +121,18 @@ export async function getSummary(req: AuthRequest, res: Response) {
 export async function getDevices(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-DEVICES] Request received", { userId });
     if (!userId) {
+      console.log("[AI-DEVICES] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-DEVICES] Calling AI service for user", userId);
     const data = await aiService.getDevices(userId);
+    console.log("[AI-DEVICES] AI service returned data successfully");
     return success({ res, data, message: "Devices retrieved successfully" });
   } catch (err) {
+    console.error("[AI-DEVICES] Error:", err);
     return error({
       res,
       message: "Failed to retrieve devices",
@@ -129,13 +144,18 @@ export async function getDevices(req: AuthRequest, res: Response) {
 export async function getAppliances(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-APPLIANCES] Request received", { userId });
     if (!userId) {
+      console.log("[AI-APPLIANCES] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-APPLIANCES] Calling AI service for user", userId);
     const data = await aiService.getAppliances(userId);
+    console.log("[AI-APPLIANCES] AI service returned data successfully");
     return success({ res, data, message: "Appliances retrieved successfully" });
   } catch (err) {
+    console.error("[AI-APPLIANCES] Error:", err);
     return error({
       res,
       message: "Failed to retrieve appliances",
@@ -147,13 +167,18 @@ export async function getAppliances(req: AuthRequest, res: Response) {
 export async function getAlerts(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-ALERTS] Request received", { userId });
     if (!userId) {
+      console.log("[AI-ALERTS] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-ALERTS] Calling AI service for user", userId);
     const data = await aiService.getAlerts(userId);
+    console.log("[AI-ALERTS] AI service returned data successfully");
     return success({ res, data, message: "Alerts retrieved successfully" });
   } catch (err) {
+    console.error("[AI-ALERTS] Error:", err);
     return error({
       res,
       message: "Failed to retrieve alerts",
@@ -165,17 +190,22 @@ export async function getAlerts(req: AuthRequest, res: Response) {
 export async function getNotifications(req: AuthRequest, res: Response) {
   try {
     const userId = Number(req.user?.sub || 0);
+    console.log("[AI-NOTIFICATIONS] Request received", { userId });
     if (!userId) {
+      console.log("[AI-NOTIFICATIONS] Unauthorized - no user ID");
       return error({ res, message: "Unauthorized", statusCode: 401 });
     }
 
+    console.log("[AI-NOTIFICATIONS] Calling AI service for user", userId);
     const data = await aiService.getNotifications(userId);
+    console.log("[AI-NOTIFICATIONS] AI service returned data successfully");
     return success({
       res,
       data,
       message: "Notifications retrieved successfully",
     });
   } catch (err) {
+    console.error("[AI-NOTIFICATIONS] Error:", err);
     return error({
       res,
       message: "Failed to retrieve notifications",
