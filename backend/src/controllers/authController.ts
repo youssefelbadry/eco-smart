@@ -17,12 +17,16 @@ import { config } from "../config";
 console.log("[AUTH-CTRL-9] After import config");
 
 console.log("[AUTH-CTRL-10] Before import query");
-import { query } from "../database";
+import { execute, query } from "../database";
 console.log("[AUTH-CTRL-11] After import query");
 
-console.log("[AUTH-CTRL-12] Before import response utils");
+console.log("[AUTH-CTRL-12] Before import onboarding service");
+import { onboardUser } from "../services/onboardingService";
+console.log("[AUTH-CTRL-13] After import onboarding service");
+
+console.log("[AUTH-CTRL-14] Before import response utils");
 import { success, error } from "../utils/response";
-console.log("[AUTH-CTRL-13] After import response utils");
+console.log("[AUTH-CTRL-15] After import response utils");
 
 const getBody = (req: Request) =>
   req.body && Object.keys(req.body).length ? req.body : {};
@@ -124,16 +128,44 @@ export async function signup(req: Request, res: Response) {
     });
   }
 
+  const existingUsers = await query<any[]>(
+    "SELECT id FROM users WHERE email = ? LIMIT 1",
+    [email],
+  );
+  if (existingUsers.length > 0) {
+    return error({
+      res,
+      message: "A user with this email already exists",
+      statusCode: 409,
+    });
+  }
+
   const passwordHash = bcrypt.hashSync(password, 10);
-  await query(
+  const result = await execute(
     "INSERT INTO users (name, email, password, remember_token, created_at, updated_at) VALUES (?, ?, ?, NULL, NOW(), NOW())",
     [name, email, passwordHash],
   );
+
+  const userId = Number(result.insertId || 0);
+  if (userId > 0) {
+    try {
+      await onboardUser(userId);
+    } catch (onboardErr) {
+      console.error("[SIGNUP] Onboarding failed for user", userId, onboardErr);
+      await execute("DELETE FROM users WHERE id = ?", [userId]);
+      return error({
+        res,
+        message: "Registration failed during account setup. Please try again.",
+        statusCode: 500,
+      });
+    }
+  }
 
   return success({
     res,
     data: {
       user: {
+        id: userId,
         name,
         email,
       },

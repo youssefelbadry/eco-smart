@@ -1,20 +1,28 @@
 {
   "version": 2,
-  "buildCommand": "cd backend && npm install --include=dev && npm run build",
+
+  "buildCommand": "cd backend && npm install && npm run build",
+
   "functions": {
     "api/**/*.js": {
       "memory": 1024,
+
       "maxDuration": 60
     }
   },
+
   "regions": ["iad1"],
+
   "routes": [
     {
       "src": "/favicon.ico",
+
       "status": 404
     },
+
     {
       "src": "/(.*)",
+
       "dest": "/api/index.js"
     }
   ]

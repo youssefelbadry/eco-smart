@@ -1,8 +1,25 @@
 import { Request, Response } from "express";
-import { aiService } from "../services/aiService";
+import { aiService, AIServiceError } from "../services/aiService";
 import { success, error } from "../utils/response";
 import type { AuthRequest } from "../middleware/auth";
 import type { PredictRequest } from "../types/ai";
+import { query } from "../database";
+
+function aiErrorStatus(err: unknown, fallback = 500): number {
+  if (err instanceof AIServiceError) {
+    return err.statusCode;
+  }
+  return fallback;
+}
+
+// Helper function to check if user has devices
+async function checkUserHasDevices(userId: number): Promise<boolean> {
+  const rows = await query<{ count: number }>(
+    "SELECT COUNT(*) as count FROM devices WHERE user_id = ?",
+    [userId],
+  );
+  return (rows[0]?.count || 0) > 0;
+}
 
 export async function health(req: Request, res: Response) {
   try {
@@ -12,7 +29,7 @@ export async function health(req: Request, res: Response) {
     return error({
       res,
       message: "Failed to check AI service health",
-      statusCode: 503,
+      statusCode: aiErrorStatus(err, 503),
     });
   }
 }
@@ -40,7 +57,7 @@ export async function predict(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to generate prediction",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -63,7 +80,7 @@ export async function getForecast(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve forecast",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -90,7 +107,7 @@ export async function getFullOutput(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve full output",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -113,7 +130,7 @@ export async function getSummary(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve summary",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -136,7 +153,7 @@ export async function getDevices(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve devices",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -159,7 +176,7 @@ export async function getAppliances(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve appliances",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -182,7 +199,7 @@ export async function getAlerts(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve alerts",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -209,7 +226,7 @@ export async function getNotifications(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve notifications",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }
@@ -232,7 +249,7 @@ export async function getChartData(req: AuthRequest, res: Response) {
     return error({
       res,
       message: "Failed to retrieve chart data",
-      statusCode: 500,
+      statusCode: aiErrorStatus(err),
     });
   }
 }

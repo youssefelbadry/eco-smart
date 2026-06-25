@@ -12,6 +12,10 @@ console.log("[APP-6] Before import routes");
 import routes from "./routes";
 console.log("[APP-7] After import routes");
 
+console.log("[APP-6b] Before import database init");
+import { ensureDatabaseInitialized } from "./database/init";
+console.log("[APP-6c] After import database init");
+
 console.log("[APP-8] Before express()");
 const app = express();
 console.log("[APP-9] After express()");
@@ -27,6 +31,19 @@ console.log("[APP-13] After app.use(express.json())");
 console.log("[APP-14] Before app.use(express.urlencoded())");
 app.use(express.urlencoded({ extended: true }));
 console.log("[APP-15] After app.use(express.urlencoded())");
+
+let dbInitPromise: Promise<void> | null = null;
+app.use(async (_req, _res, next) => {
+  try {
+    if (!dbInitPromise) {
+      dbInitPromise = ensureDatabaseInitialized();
+    }
+    await dbInitPromise;
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 console.log("[APP-16] Before app.use(routes)");
 app.use(routes);

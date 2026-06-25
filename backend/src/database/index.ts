@@ -49,3 +49,13 @@ export async function query<T = any>(
   console.log("[DB] Query completed", { rowsCount: rows.length });
   return rows;
 }
+
+export async function execute(sql: string, params: any[] = []): Promise<any> {
+  const pool = getPool();
+  console.log("[DB] Execute running", {
+    sql: sql.substring(0, 100),
+    paramsCount: params.length,
+  });
+  const [result] = await pool.execute(sql, params);
+  return result;
+}

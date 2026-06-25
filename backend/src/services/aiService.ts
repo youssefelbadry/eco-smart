@@ -4,6 +4,16 @@ import type { PredictRequest, AIResponse } from "../types/ai";
 
 const AI_SERVICE_URL = config.aiServiceUrl;
 
+export class AIServiceError extends Error {
+  statusCode: number;
+
+  constructor(message: string, statusCode = 503) {
+    super(message);
+    this.name = "AIServiceError";
+    this.statusCode = statusCode;
+  }
+}
+
 const axiosInstance = axios.create({
   baseURL: AI_SERVICE_URL,
   timeout: 30000,
@@ -19,7 +29,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI health check failed");
-      throw error;
     }
   }
 
@@ -29,7 +38,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI prediction failed");
-      throw error;
     }
   }
 
@@ -44,7 +52,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI forecast retrieval failed");
-      throw error;
     }
   }
 
@@ -54,7 +61,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI full output retrieval failed");
-      throw error;
     }
   }
 
@@ -64,7 +70,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI summary retrieval failed");
-      throw error;
     }
   }
 
@@ -74,7 +79,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI devices retrieval failed");
-      throw error;
     }
   }
 
@@ -84,7 +88,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI appliances retrieval failed");
-      throw error;
     }
   }
 
@@ -94,7 +97,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI alerts retrieval failed");
-      throw error;
     }
   }
 
@@ -104,7 +106,6 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI notifications retrieval failed");
-      throw error;
     }
   }
 
@@ -119,27 +120,34 @@ class AIService {
       return response.data;
     } catch (error) {
       this.handleError(error, "AI chart data retrieval failed");
-      throw error;
     }
   }
 
-  private handleError(error: unknown, message: string): void {
+  private handleError(error: unknown, message: string): never {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
       if (axiosError.code === "ECONNABORTED") {
         console.error(`${message}: Request timeout`);
-      } else if (axiosError.response) {
+        throw new AIServiceError(`${message}: request timeout`, 504);
+      }
+      if (axiosError.response) {
         console.error(
           `${message}: ${axiosError.response.status} - ${axiosError.response.statusText}`,
         );
-      } else if (axiosError.request) {
-        console.error(`${message}: No response received from AI service`);
-      } else {
-        console.error(`${message}: ${axiosError.message}`);
+        throw new AIServiceError(message, axiosError.response.status);
       }
-    } else {
-      console.error(`${message}:`, error);
+      if (axiosError.request) {
+        console.error(`${message}: No response received from AI service`);
+        throw new AIServiceError(message, 503);
+      }
+      console.error(`${message}: ${axiosError.message}`);
+      throw new AIServiceError(message, 503);
     }
+    if (error instanceof AIServiceError) {
+      throw error;
+    }
+    console.error(`${message}:`, error);
+    throw new AIServiceError(message, 500);
   }
 }
 

@@ -35,35 +35,65 @@ export async function usageOverview(req: AuthRequest, res: Response) {
   const weekly = (weeklies as any) || {};
   const monthly = (monthlies as any) || {};
 
+  const energyTargets = await query<any[]>(
+    `SELECT target_kwh, daily_target_kwh FROM energy_targets WHERE user_id = ? AND month = DATE_FORMAT(CURDATE(), "%Y-%m-01") LIMIT 1`,
+    [userId],
+  );
+  const targetRow = (energyTargets[0] as any) || {};
+  const dailyTarget = Number(targetRow.daily_target_kwh ?? 30);
+  const monthlyTarget = Number(targetRow.target_kwh ?? 900);
+
+  const dailyUsage = Number(daily.kwh ?? 0);
+  const weeklyUsage = Number(weekly.total_kwh ?? 0);
+  const monthlyUsage = Number(monthly.total_kwh ?? 0);
+
   return success({
     res,
     data: {
       daily: {
         period_type: "daily",
-        usage_kwh: daily.kwh ?? 0,
+        usage_kwh: dailyUsage,
         baseline_kwh: 0,
-        target_kwh: 0,
-        achievement_percent: 0,
+        target_kwh: dailyTarget,
+        achievement_percent:
+          dailyTarget > 0
+            ? Math.min(
+                100,
+                Number(((dailyUsage / dailyTarget) * 100).toFixed(2)),
+              )
+            : 0,
         period_start: daily.usage_date ?? null,
         period_end: daily.usage_date ?? null,
         cost: daily.cost ?? 0,
       },
       weekly: {
         period_type: "weekly",
-        usage_kwh: weekly.total_kwh ?? 0,
+        usage_kwh: weeklyUsage,
         baseline_kwh: 0,
-        target_kwh: 0,
-        achievement_percent: 0,
+        target_kwh: dailyTarget * 7,
+        achievement_percent:
+          dailyTarget > 0
+            ? Math.min(
+                100,
+                Number(((weeklyUsage / (dailyTarget * 7)) * 100).toFixed(2)),
+              )
+            : 0,
         period_start: weekly.week_start ?? null,
         period_end: weekly.week_end ?? null,
         cost: weekly.total_cost ?? 0,
       },
       monthly: {
         period_type: "monthly",
-        usage_kwh: monthly.total_kwh ?? 0,
+        usage_kwh: monthlyUsage,
         baseline_kwh: 0,
-        target_kwh: 0,
-        achievement_percent: 0,
+        target_kwh: monthlyTarget,
+        achievement_percent:
+          monthlyTarget > 0
+            ? Math.min(
+                100,
+                Number(((monthlyUsage / monthlyTarget) * 100).toFixed(2)),
+              )
+            : 0,
         period_start: monthly.month ?? null,
         period_end: monthly.month ?? null,
         cost: monthly.total_cost ?? 0,
